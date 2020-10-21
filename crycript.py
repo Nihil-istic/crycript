@@ -2,6 +2,7 @@ from base64 import urlsafe_b64encode
 from getpass import getpass
 from os import remove, urandom
 from os.path import isfile, abspath
+from time import sleep
 
 from cryptography.fernet import Fernet
 from cryptography.fernet import InvalidToken
@@ -11,9 +12,7 @@ from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 
 
 # GLOBAL VARIABLES
-# int: encryption / decryption iterations (keep this value small, ideally between 1 and 5)
-CRY_ITERATIONS = 1
-# str: encrypted files extension
+# str: encrypted file extension
 EXTENSION = '.cry'
 # int: key iterations
 PBKDF_ITERATIONS = 100_000
@@ -22,9 +21,9 @@ SALT_SIZE = 16
 # b str: separator
 SEPARATOR = b';'
 # b str: crycript version
-VERSION = b'CRYCRIPT_1.0.1'
+VERSION = b'CRYCRIPT:2020.10.01'
 # b str: version key (this will be changing between each version)
-VERSION_KEY = b'ScNhTLjpuF7uFTzAdZFR_NxOshnkkx9MqVp0X-gzhTQ='
+VERSION_KEY = b'Nncbuoc8pfiXJlaGhZwTKGmYsSSo0SZAnUf_KBnPnE0='
 
 
 # ERRORS
@@ -73,23 +72,25 @@ def encrypt(path):
         # Path for the encrypted file
         path_encrypted = path + EXTENSION
 
-        # Read the original file and extract its contents
-        with open(path, 'rb') as raw_file:
-            contents = raw_file.read()
-
         # Get encryption key
         salt, key = get_key()
 
         # Set the cipher
         cipher = Fernet(key)
 
+        # Set version key cipher
+        version_cipher = Fernet(VERSION_KEY)
+
+        # Read the original file and extract its contents
+        with open(path, 'rb') as raw_file:
+            contents = raw_file.read()
+
         # Encrypt contents
-        for _ in range(CRY_ITERATIONS):
-            contents = cipher.encrypt(contents)
+        contents = cipher.encrypt(contents)
 
         # Version key encryption
-        salt = Fernet(VERSION_KEY).encrypt(salt)
-        contents = Fernet(VERSION_KEY).encrypt(contents)
+        salt = version_cipher.encrypt(salt)
+        contents = version_cipher.encrypt(contents)
 
         # Write a new encrypted file
         with open(path_encrypted, 'wb') as encrypted_file:
@@ -127,9 +128,12 @@ def decrypt(path):
         # Delete version from memory
         del version
 
+        # Set version key cipher
+        version_cipher = Fernet(VERSION_KEY)
+
         # Version decrypt contents
-        salt = Fernet(VERSION_KEY).decrypt(salt)
-        contents = Fernet(VERSION_KEY).decrypt(contents)
+        salt = version_cipher.decrypt(salt)
+        contents = version_cipher.decrypt(contents)
 
         # Get decryption key
         salt, key = get_key(salt)
@@ -142,21 +146,21 @@ def decrypt(path):
 
         try:
             # Decrypt contents
-            for _ in range(CRY_ITERATIONS):
-                contents = cipher.decrypt(contents)
-
-            # Write a new decrypted file
-            with open(path_decrypted, 'wb') as decrypted_file:
-                decrypted_file.write(contents)
-
-            # Delete contents (decrypted) from memory
-            del contents
-
-            # Delete encrypted file
-            remove(path)
+            contents = cipher.decrypt(contents)
 
         except InvalidToken:
+            sleep(5)
             raise InvalidToken('Decryption aborted: invalid password.')
+
+        # Write a new decrypted file
+        with open(path_decrypted, 'wb') as decrypted_file:
+            decrypted_file.write(contents)
+
+        # Delete contents (decrypted) from memory
+        del contents
+
+        # Delete encrypted file
+        remove(path)
 
     elif not isfile(path):
         raise PathError(f'Decryption aborted: path is not a file.')
