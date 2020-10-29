@@ -3,6 +3,7 @@ from base64 import urlsafe_b64encode
 from getpass import getpass
 from os import remove, urandom
 from os.path import isfile, abspath
+from sys import exit
 from time import sleep
 
 from cryptography.fernet import Fernet
@@ -21,26 +22,31 @@ SALT_SIZE = 16
 # b str: separator
 SEPARATOR = b';'
 # b str: crycript version
-VERSION = b'CRYCRIPT:2020.10.22'
+VERSION = b'CRYCRIPT:2020.10.28'
+# str: DO NOT TOUCH THIS ONE, string version of VERSION
+STR_VERSION = str(VERSION)[2:-1]
 # b str: version key (this will be changing between each version)
-VERSION_KEY = b'xCHACSdlbmg56i212CYyZrvl2weByLedxt7i3KitWS0='
+VERSION_KEY = b'NiW7246mzeX-QXQI80SCL5P3KlaXi4pDC4kXTtpkrHU='
 # int: password length
 PASSWORD_LENGTH = 6
 
 
-# ERRORS
-class Error(Exception): pass
-class PathError(Error): pass
-class PasswordError(Error): pass
-class VersionError(Error): pass
-class ArgumentError(Error): pass
+def bye(text):
+    print(text)
+    exit(0)
 
 
 def get_key(salt=None):
     # Get password
     password = getpass('Enter your password: ')
-    if not password == getpass('Confirm password: ') and password >= PASSWORD_LENGTH:
-        raise PasswordError('Passwords do not match.')
+
+    # Check for length of password
+    if len(password) < PASSWORD_LENGTH:
+        bye('Password must be at least 6 characters.')
+
+    # Check to see if there is no typo in password
+    if not password == getpass('Confirm password: '):
+        bye('Passwords do not match.')
 
     # Change password string to binary string
     password = password.encode()
@@ -106,10 +112,10 @@ def encrypt(path):
         remove(path)
 
     elif not isfile(path):
-        raise PathError('Encryption aborted: path is not a file.')
+        bye('Encryption aborted: path is not a file.')
 
     elif path.endswith(EXTENSION):
-        raise PathError(f'Encryption aborted: path is already encrypted.')
+        bye(f'Encryption aborted: path is already encrypted.')
 
 
 def decrypt(path):
@@ -126,7 +132,7 @@ def decrypt(path):
 
         # Make sure encrypted file is compatible with crycript version
         if version != VERSION:
-            raise VersionError('Your encrypted file version is not supported.')
+            bye(f'Your encrypted file version is not supported.')
 
         # Delete version from memory
         del version
@@ -152,8 +158,9 @@ def decrypt(path):
             contents = cipher.decrypt(contents)
 
         except InvalidToken:
-            sleep(5)
-            raise InvalidToken('Decryption aborted: invalid password.')
+            # Try to prevent brute force attacks
+            sleep(10)
+            bye('Decryption aborted: invalid password.')
 
         # Write a new decrypted file
         with open(path_decrypted, 'wb') as decrypted_file:
@@ -166,30 +173,41 @@ def decrypt(path):
         remove(path)
 
     elif not isfile(path):
-        raise PathError(f'Decryption aborted: path is not a file.')
+        bye(f'Decryption aborted: path is not a file.')
 
     elif not path.endswith(EXTENSION):
-        raise PathError(f'Decryption aborted: path is not encrypted.')
+        bye(f'Decryption aborted: path is not encrypted.')
 
 
 if __name__ == '__main__':
-    parser = ArgumentParser(description='Custom python Fernet symmetric encryption tool by Salvador BG')
+    # Set parser
+    parser = ArgumentParser(description=f'{STR_VERSION}: python symmetric encryption tool by Salvador BG')
+
+    # Set path argument
     parser.add_argument('path', help='path to file.')
 
+    # Set mutually exclusive action (either encrypt or decrypt)
     action = parser.add_mutually_exclusive_group()
     action.add_argument('-e', '--encrypt', help='encrypt a file.', action='store_true')
     action.add_argument('-d', '--decrypt', help='decrypt a file.', action='store_true')
 
+    # Parse arguments
     args = parser.parse_args()
 
+    # Make sure only one argument is given
     if (args.encrypt and args.decrypt) or (not args.encrypt and not args.decrypt):
-        raise ArgumentError('You need to choose one action (either encrypt or decrypt).')
+        bye('You need to choose one action (either encrypt or decrypt).')
 
+    # Encrypt action
     elif args.encrypt:
         encrypt(args.path)
+        bye('Encryption completed.')
 
+    # Decrypt action
     elif args.decrypt:
         decrypt(args.path)
+        bye('Decryption completed.')
 
+    # What the fuck?
     else:
-        raise ArgumentError('How the fuck did you ended here?')
+        bye('How the fuck did you ended here?')
