@@ -1,2 +1,2 @@
 # crycript
-Python custom Fernet encryption tool by Salvador BG
+Python symmetric encryption tool by Salvador BG
