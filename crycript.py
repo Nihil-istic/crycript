@@ -1,10 +1,10 @@
+#!shebang
+
 from argparse import ArgumentParser
 from base64 import urlsafe_b64encode
 from getpass import getpass
 from os import remove, urandom
-from os.path import isfile, abspath
-from sys import exit
-from time import sleep
+from os.path import isfile, abspath, dirname
 
 from cryptography.fernet import Fernet
 from cryptography.fernet import InvalidToken
@@ -22,18 +22,18 @@ SALT_SIZE = 16
 # b str: separator
 SEPARATOR = b';'
 # b str: crycript version
-VERSION = b'CRYCRIPT:2020.10.28'
+VERSION = b'CRYCRIPT:2020.11.20'
 # str: DO NOT TOUCH THIS ONE, string version of VERSION
 STR_VERSION = str(VERSION)[2:-1]
 # b str: version key (this will be changing between each version)
-VERSION_KEY = b'NiW7246mzeX-QXQI80SCL5P3KlaXi4pDC4kXTtpkrHU='
+VERSION_KEY = b'O87XjL67TLJP3pNa-YRCDQuR2DYTHGiy67m__-JPRbM='
 # int: password length
-PASSWORD_LENGTH = 6
+PASSWORD_LENGTH = 8
 
 
 def bye(text):
     print(text)
-    exit(0)
+    raise SystemExit
 
 
 def get_key(salt=None):
@@ -42,7 +42,7 @@ def get_key(salt=None):
 
     # Check for length of password
     if len(password) < PASSWORD_LENGTH:
-        bye('Password must be at least 6 characters.')
+        bye(f'Password must be at least {PASSWORD_LENGTH} characters.')
 
     # Check to see if there is no typo in password
     if not password == getpass('Confirm password: '):
@@ -78,8 +78,11 @@ def encrypt(path):
         # Always work with absolute path
         path = abspath(path)
 
+        # File name
+        path_filename = path[1 + len(dirname(path)):].encode()
+
         # Path for the encrypted file
-        path_encrypted = path + EXTENSION
+        path_encrypted = dirname(path) + '/' + str(Fernet.generate_key())[2:-1] + EXTENSION
 
         # Get encryption key
         salt, key = get_key()
@@ -96,14 +99,16 @@ def encrypt(path):
 
         # Encrypt contents
         contents = cipher.encrypt(contents)
+        path_filename = cipher.encrypt(path_filename)
 
         # Version key encryption
         salt = version_cipher.encrypt(salt)
         contents = version_cipher.encrypt(contents)
+        path_filename = version_cipher.encrypt(path_filename)
 
         # Write a new encrypted file
         with open(path_encrypted, 'wb') as encrypted_file:
-            encrypted_file.write(VERSION + SEPARATOR + salt + SEPARATOR + contents)
+            encrypted_file.write(VERSION + SEPARATOR + salt + SEPARATOR + path_filename + SEPARATOR + contents)
 
         # Delete contents (encrypted) from memory
         del contents
@@ -123,12 +128,9 @@ def decrypt(path):
         # Always work with absolute path
         path = abspath(path)
 
-        # Path for the encrypted file
-        path_decrypted = path[: -1 * len(EXTENSION)]
-
         # Extract the encrypted content
         with open(path, 'rb') as encrypted_file:
-            version, salt, contents = encrypted_file.read().split(SEPARATOR)
+            version, salt, path_decrypted, contents = encrypted_file.read().split(SEPARATOR)
 
         # Make sure encrypted file is compatible with crycript version
         if version != VERSION:
@@ -143,6 +145,7 @@ def decrypt(path):
         # Version decrypt contents
         salt = version_cipher.decrypt(salt)
         contents = version_cipher.decrypt(contents)
+        path_decrypted = version_cipher.decrypt(path_decrypted)
 
         # Get decryption key
         salt, key = get_key(salt)
@@ -157,12 +160,14 @@ def decrypt(path):
             # Decrypt contents
             contents = cipher.decrypt(contents)
 
+            # Decrypt filename
+            path_decrypted = cipher.decrypt(path_decrypted)
+
         except InvalidToken:
-            # Try to prevent brute force attacks
-            sleep(10)
             bye('Decryption aborted: invalid password.')
 
         # Write a new decrypted file
+        path_decrypted = dirname(path) + '/' + path_decrypted.decode()
         with open(path_decrypted, 'wb') as decrypted_file:
             decrypted_file.write(contents)
 
@@ -181,15 +186,18 @@ def decrypt(path):
 
 if __name__ == '__main__':
     # Set parser
-    parser = ArgumentParser(description=f'{STR_VERSION}: python symmetric encryption tool by Salvador BG')
+    parser = ArgumentParser(description='Python symmetric encryption tool by Salvador BG')
+
+    # Set version
+    parser.add_argument('-v', '--version', help='show version and exit', action='version', version=STR_VERSION)
 
     # Set path argument
-    parser.add_argument('path', help='path to file.')
+    parser.add_argument('path', help='path to file')
 
     # Set mutually exclusive action (either encrypt or decrypt)
     action = parser.add_mutually_exclusive_group()
-    action.add_argument('-e', '--encrypt', help='encrypt a file.', action='store_true')
-    action.add_argument('-d', '--decrypt', help='decrypt a file.', action='store_true')
+    action.add_argument('-e', '--encrypt', help='encrypt a file', action='store_true')
+    action.add_argument('-d', '--decrypt', help='decrypt a file', action='store_true')
 
     # Parse arguments
     args = parser.parse_args()
