@@ -218,4 +218,4 @@ if __name__ == '__main__':
 
     # What the fuck?
     else:
-        bye('How the fuck did you ended here?')
+        bye('How the fuck did you end up here?')
