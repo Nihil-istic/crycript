@@ -61,7 +61,7 @@ You have your script ready to go!
 
     cp file file.bak
     
-Where <file> is the path to the file
+Where file is the path to the file
     
 ## 2 Decrypt them
 
