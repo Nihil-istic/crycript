@@ -1,59 +1,47 @@
 # crycript
 Python symmetric encryption tool by Salvador BG
 
-# How to use it?
+# How to install on linux?
 
-Download the program and then follow the instructions
+## 1 Download the program
 
-    Go to https://github.com/Nihil-istic/crycript
-    Click the green button "Code"
-    Click Download ZIP
+Go to https://github.com/Nihil-istic/crycript
+Click the green button "Code"
+Click Download ZIP
+If not there, move the zip file to ~/Downloads
 
-## On linux:
+## 2 Extract the zip file
 
-### 1 Create a directory where crycript will be located:
+You should now have a crycript-main folder in ~/Downloads
 
-    mkdir -pv ~/.local/opt/python-scripts
-    
-### 2 Move your downloaded zip to ~/.local/opt/:
+You can now delete the zip file:
 
-    mv -vi ~/Downloads/crycript-main.zip ~/.local/opt
-    
-### 3 Extract the contents of the zip file.
+    rm ~/Downloads/crycript-main.zip
 
-You can now delete the original zip file as it will be not longer needed.
+## 3 Give executable permissions to the installer
 
-### 4 Make sure you have the right permissions setup
+    chmod 700 ~/Downloads/crycript-main/crycript\ installer.sh
 
-    chmod 0600 ~/.local/opt/crycript-main/*
+## 4 Execute the installer
 
-    chmod 0700 ~/.local/opt/crycript-main/crycript.py
-    
-### 5 Add simbolic link (for a cleaner setup)
+    cd ~/Downloads/crycript-main && ./crycript\ installer.sh
 
-    ln -s ~/.local/opt/crycript-main/crycript.py ~/.local/opt/python-scripts/crycript
+# How to uninstall it on linux?
 
-### 7 Make sure the default shebang (#!/usr/bin/env python) will work for you (python 3.9), if not, change it as needed.
+## 1 Give executable permissions to the uninstaller
 
-### 8 Add to your .bashrc the line: export PATH=$PATH":$HOME/.local/opt/python-scripts/"
+    chmod 700 ~/.local/opt/crycript-main/crycript\ uninstaller.sh
 
-    echo '# Python Scripts' >> ~/.bashrc
-    echo 'export PATH=$PATH":$HOME/.local/opt/python-scripts/' >> ~/.bashrc
+## 2 Execute the uninstaller
 
-### 9 Open a new terminal and type
+    cd  ~/.local/opt/crycript-main/ && ./crycript\ uninstaller.sh
 
-    crycript
+## 3 Modify your ~/.bashrc file
 
-If you get the following message:
-
-    usage: crycript [-h] [-v] [-p] [-e | -d | -c] path
-    crycript: error: the following arguments are required: path
-
-You have your script ready to go!
-
-### 10 To see usage type:
-
-    crycript.py --help
+You now have:
+    # Python scripts
+    export PATH=$PATH...
+You can now delete those two lines
 
 # How to update?
 
@@ -67,18 +55,11 @@ Where file is the path to the file
 
     crycript -d file
 
-## 3 Remove old crycript files
+## 3 Uninstall crycript (using the uninstaller) or remove old files
 
     rm ~/.local/opt/crycript-main/*
 
-## 4 Download the new zip file
-
-Then paste its contents in ~/.local/opt/crycript-main/
-
-## 4 Make sure you have the right permission setup
-
-    chmod 0600 ~/.local/opt/crycript-main/*
-    chmod 0700 ~/.local/opt/crycript-main/crycript.py
+## 4 Follow the installation guide
     
 ## 5 Encrypt your files with the new version
 
