@@ -6,8 +6,11 @@ Python symmetric encryption tool by Salvador BG
 ## 1 Download the program
 
 Go to https://github.com/Nihil-istic/crycript
+
 Click the green button "Code"
+
 Click Download ZIP
+
 If not there, move the zip file to ~/Downloads
 
 ## 2 Extract the zip file
@@ -39,8 +42,11 @@ You can now delete the zip file:
 ## 3 Modify your ~/.bashrc file
 
 You now have:
+
     # Python scripts
+    
     export PATH=$PATH...
+    
 You can now delete those two lines
 
 # How to update?
