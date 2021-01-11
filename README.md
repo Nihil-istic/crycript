@@ -29,6 +29,12 @@ You can now delete the zip file:
 
     cd ~/Downloads/crycript-main && ./crycript\ installer.sh
 
+## 5 Install pip requirements
+
+Make sure you have a working pip installation
+
+    pip install -r ~/.local/opt/crycript-main/requirements.txt
+
 # How to uninstall it on linux?
 
 ## 1 Give executable permissions to the uninstaller
