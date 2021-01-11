@@ -63,9 +63,6 @@ args_path = abspath(args.path)
 if not isfile(args_path):
     bye('Path is not a file')
 
-# Set preserve variable
-PRESERVE = args.preserve
-
 # Encrypt action
 if args.encrypt:
     encryption_cipher = Fernet(get_key(True))
