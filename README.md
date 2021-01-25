@@ -3,7 +3,7 @@ Python symmetric encryption tool by SalvadorBG
 
 # How to install on linux?
 
-## 1 Download the program
+## 1 Download the project
 
 Go to https://github.com/Nihil-istic/crycript
 
