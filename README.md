@@ -1,5 +1,5 @@
 # crycript
-Python symmetric encryption tool by Salvador BG
+Python symmetric encryption tool by SalvadorBG
 
 # How to install on linux?
 
@@ -13,25 +13,23 @@ Click Download ZIP
 
 If not there, move the zip file to ~/Downloads
 
-## 2 Extract the zip file
+## 2 Extract the downloaded zip file
 
-You should now have a crycript-main folder in ~/Downloads
+You should now have a crycript-main directory
 
-You can now delete the zip file:
-
-    rm ~/Downloads/crycript-main.zip
+You can now delete the zip file
 
 ## 3 Give executable permissions to the installer
 
-    chmod 700 ~/Downloads/crycript-main/crycript\ installer.sh
+    chmod 700 ~/Downloads/crycript-main/installer.sh
 
 ## 4 Execute the installer
 
-    cd ~/Downloads/crycript-main && ./crycript\ installer.sh
+    cd ~/Downloads/crycript-main && ./installer.sh
 
 ## 5 Install pip requirements
 
-Make sure you have a working pip installation
+Make sure you have a working pip installation for python 3.9
 
     pip install -r ~/.local/opt/crycript-main/requirements.txt
 
@@ -39,29 +37,24 @@ Make sure you have a working pip installation
 
 ## 1 Give executable permissions to the uninstaller
 
-    chmod 700 ~/.local/opt/crycript-main/crycript\ uninstaller.sh
+    chmod 700 ~/.local/opt/crycript-main/uninstaller.sh
 
 ## 2 Execute the uninstaller
 
-    cd  ~/.local/opt/crycript-main/ && ./crycript\ uninstaller.sh
+    cd  ~/.local/opt/crycript-main/ && ./uninstaller.sh
 
 ## 3 Modify your ~/.bashrc file
 
-You now have:
+If not needed, you can now delete these two lines:
 
     # Python scripts
-    
     export PATH=$PATH...
     
-You can now delete those two lines
-
 # How to update?
 
 ## 1 Make a backup of encrypted files
 
     cp file file.bak
-    
-Where file is the path to the file
     
 ## 2 Decrypt them
 
