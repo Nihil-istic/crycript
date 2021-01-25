@@ -41,7 +41,7 @@ Open a new terminal and type:
 
 To see usage information
 
-# How to uninstall it on linux?
+# How to uninstall on linux?
 
 ## 1 Give executable permissions to the uninstaller
 
