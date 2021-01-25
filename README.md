@@ -33,6 +33,14 @@ Make sure you have a working pip installation for python 3.9
 
     pip install -r ~/.local/opt/crycript-main/requirements.txt
 
+## 6 How to use it?
+
+Open a new terminal and type:
+
+    crycript --help
+
+To see usage information
+
 # How to uninstall it on linux?
 
 ## 1 Give executable permissions to the uninstaller
@@ -48,7 +56,7 @@ Make sure you have a working pip installation for python 3.9
 If not needed, you can now delete these two lines:
 
     # Python scripts
-    export PATH=$PATH...
+    export PATH=$PATH":$HOME/.local/opt/python-scripts/"
     
 # How to update?
 
