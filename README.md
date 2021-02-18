@@ -1,9 +1,9 @@
 # crycript
 Python symmetric encryption tool by SalvadorBG
 
-# How to install on linux?
+# How to install?
 
-## 1 Download the project
+## 1 Download crycript
 
 Go to https://github.com/Nihil-istic/crycript
 
@@ -17,60 +17,107 @@ If not there, move the zip file to ~/Downloads
 
 You should now have a crycript-main directory
 
-You can now delete the zip file
+You can delete the zip file
 
-## 3 Give executable permissions to the installer
+## 3 Create a directory for crycript
 
-    chmod 700 ~/Downloads/crycript-main/installer.sh
+    mkdir -pv ~/.local/opt/python-scripts
+    
+## 4 Move crycript-main to its new directory
 
-## 4 Execute the installer
+    mv -v ~/Downloads/crycript-main ~/.local/opt
 
-    cd ~/Downloads/crycript-main && ./installer.sh
+## 5 Give executable permissions to CrycriptCLI.py
 
-## 5 Install pip requirements
+    chmod 700 ~/.local/opt/crycript-main/src/CrycriptCLI.py
 
-Make sure you have a working pip installation for python 3.9
+## 6 Create a symbolic link
+
+    ln -s ~/.local/opt/crycript-main/src/CrycriptCLI.py ~/.local/opt/python-scripts/crycript
+
+## 7 Add python-scripts to $PATH
+
+    echo >> ~/.bashrc
+    
+    echo '# Python Scripts' >> ~/.bashrc
+    
+    echo 'export PATH=$PATH":$HOME/.local/opt/python-scripts/"' >> ~/.bashrc
+
+## 8 Install requirements.txt
+
+Make sure you have a working pip installation for python3
 
     pip install -r ~/.local/opt/crycript-main/requirements.txt
+    
+Or
 
-## 6 How to use it?
+    pip3 install -r ~/.local/opt/crycript-main/requirements.txt
 
-Open a new terminal and type:
+Or 
+    
+    pip3.9 install -r ~/.local/opt/crycript-main/requirements.txt
 
-    crycript --help
+## 9 Test your installation
 
-To see usage information
+    crycript -v
 
-# How to uninstall on linux?
+If the ouput is the crycript version (a date with the format YYYY.MM.DD), you are ready to go!
 
-## 1 Give executable permissions to the uninstaller
 
-    chmod 700 ~/.local/opt/crycript-main/uninstaller.sh
+# How to uninstall?
 
-## 2 Execute the uninstaller
+## 1 Uninstall pip requirements
 
-    cd  ~/.local/opt/crycript-main/ && ./uninstaller.sh
+    pip uninstall -r ~/.local/opt/crycript-main/requirements.txt
 
-## 3 Modify your ~/.bashrc file
+Or
 
-If not needed, you can now delete these two lines:
+    pip3 uninstall -r ~/.local/opt/crycript-main/requirements.txt
+
+Or
+
+    pip3.9 uninstall -r ~/.local/opt/crycript-main/requirements.txt
+
+## 2 Remove the crycript directory and its contents
+
+    rm -vr ~/.local/opt/crycript-main
+
+## 3 Remove the symbolic link
+
+    rm -v ~/.local/opt/python-scripts/crycript
+    
+## 4 If no longer needed, remove the empty python-scripts directory
+
+    rmdir -v ~/.local/opt/python-scripts
+    
+## 5 If no longer needed, remove the empty opt directory
+
+    rmdir -v ~/.local/opt
+    
+## 6 If no longer needed, remove the empty .local directory (this is usually not the case)
+
+    rmdir -v ~/.local    
+
+## 7 If no longer needed, remove python-scripts from $PATH
+
+Manually remove this two lines:
 
     # Python scripts
     export PATH=$PATH":$HOME/.local/opt/python-scripts/"
-    
+
+Or use sed:
+        
+        sed -i '/# Python Scripts/{N;d;}' ~/.bashrc
+
 # How to update?
-
-## 1 Make a backup of encrypted files
-
-    cp file file.bak
     
-## 2 Decrypt them
+## 1 Decrypt your files
 
     crycript -d file
 
-## 3 Uninstall crycript (using the uninstaller) or remove old files
+## 3 Uninstall crycript (following the guide above) or remove old files
 
-    rm ~/.local/opt/crycript-main/*
+    rm -rv ~/.local/opt/crycript-main/*
 
 ## 4 Follow the installation guide
     
