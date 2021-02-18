@@ -100,7 +100,7 @@ Or
 
 ## 7 If no longer needed, remove python-scripts from $PATH
 
-Manually remove this two lines:
+Manually remove these two lines:
 
     # Python scripts
     export PATH=$PATH":$HOME/.local/opt/python-scripts/"
