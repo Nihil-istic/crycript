@@ -27,7 +27,7 @@ You can delete the zip file
 
     mv -v ~/Downloads/crycript-main ~/.local/opt
 
-## 5 Give executable permissions to CrycriptCLI.py
+## 5 Give executable permissions to cli.py
 
     chmod 700 ~/.local/opt/crycript-main/cli.py
 
