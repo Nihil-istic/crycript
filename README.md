@@ -115,12 +115,12 @@ Or use sed:
 
     crycript -d file
 
-## 3 Uninstall crycript (following the guide above) or remove old files
+## 2 Uninstall crycript (following the guide above) or remove old files
 
     rm -rv ~/.local/opt/crycript-main/*
 
-## 4 Follow the installation guide
+## 3 Follow the installation guide
     
-## 5 Encrypt your files with the new version
+## 4 Encrypt your files with the new version
 
     crycript -e file
