@@ -29,11 +29,11 @@ You can delete the zip file
 
 ## 5 Give executable permissions to CrycriptCLI.py
 
-    chmod 700 ~/.local/opt/crycript-main/src/CrycriptCLI.py
+    chmod 700 ~/.local/opt/crycript-main/cli.py
 
 ## 6 Create a symbolic link
 
-    ln -s ~/.local/opt/crycript-main/src/CrycriptCLI.py ~/.local/opt/python-scripts/crycript
+    ln -s ~/.local/opt/crycript-main/cli.py ~/.local/opt/python-scripts/crycript
 
 ## 7 Add python-scripts to $PATH
 
