@@ -29,6 +29,10 @@ You can delete the zip file
 
 ## 5 Give executable permissions to cli.py
 
+    find ~/.local/opt/crycript-main/ -type d -exec chmod 700 {} +
+
+    find ~/.local/opt/crycript-main/ -type f -exec chmod 600 {} +
+
     chmod 700 ~/.local/opt/crycript-main/cli.py
 
 ## 6 Create a symbolic link
@@ -47,49 +51,49 @@ You can delete the zip file
 
 Make sure you have a working pip installation for python3
 
-    pip install -r ~/.local/opt/crycript-main/requirements.txt
+    pip install --user -r ~/.local/opt/crycript-main/requirements.txt
     
 Or
 
-    pip3 install -r ~/.local/opt/crycript-main/requirements.txt
+    pip3 install --user -r ~/.local/opt/crycript-main/requirements.txt
 
 Or 
     
-    pip3.9 install -r ~/.local/opt/crycript-main/requirements.txt
+    pip3.9 install --user -r ~/.local/opt/crycript-main/requirements.txt
 
 ## 9 Test your installation
 
     crycript -v
 
-If the ouput is the crycript version (a date with the format YYYY.MM.DD), you are ready to go!
+If the output is the crycript version (a date with the format YYYY.MM.DD), you are ready to go!
 
 
 # How to uninstall?
 
 ## 1 Uninstall pip requirements
 
-    pip uninstall -r ~/.local/opt/crycript-main/requirements.txt
+    pip uninstall --user -r ~/.local/opt/crycript-main/requirements.txt
 
 Or
 
-    pip3 uninstall -r ~/.local/opt/crycript-main/requirements.txt
+    pip3 uninstall --user -r ~/.local/opt/crycript-main/requirements.txt
 
 Or
 
-    pip3.9 uninstall -r ~/.local/opt/crycript-main/requirements.txt
+    pip3.9 uninstall --user -r ~/.local/opt/crycript-main/requirements.txt
 
-## 2 Remove the crycript directory and its contents
-
-    rm -vr ~/.local/opt/crycript-main
-
-## 3 Remove the symbolic link
+## 2 Remove the symbolic link
 
     rm -v ~/.local/opt/python-scripts/crycript
-    
+
+## 3 Remove the crycript directory and its contents
+
+    rm -vr ~/.local/opt/crycript-main
+ 
 ## 4 If no longer needed, remove the empty python-scripts directory
 
     rmdir -v ~/.local/opt/python-scripts
-    
+
 ## 5 If no longer needed, remove the empty opt directory
 
     rmdir -v ~/.local/opt
@@ -113,7 +117,7 @@ Or use sed:
     
 ## 1 Decrypt your files
 
-    crycript -d file
+    crycript -d file1 file2 ... file_n-1 file_n
 
 ## 2 Uninstall crycript (following the guide above) or remove old files
 
@@ -123,4 +127,4 @@ Or use sed:
     
 ## 4 Encrypt your files with the new version
 
-    crycript -e file
+    crycript -e file1 file2 ... file_n-1 file_n

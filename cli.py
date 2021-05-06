@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python3.9
 
 from argparse import ArgumentParser
 
@@ -23,6 +23,15 @@ parser.add_argument(
     help='use the same password when dealing with multiple paths',
     action='store_true',
     dest='same_password'
+)
+
+# Set preserve argument
+parser.add_argument(
+    '-p',
+    '--preserve',
+    help='do not delete original files',
+    action='store_true',
+    dest='preserve'
 )
 
 # Set path argument
@@ -63,41 +72,43 @@ parser_action_group.add_argument(
 
 if __name__ == '__main__':
     # Parse arguments
-    args = parser.parse_args()
+    arguments = parser.parse_args()
+
+    # Set preserve
+    crycript.constants.PRESERVE_ORIGINAL_FILES = arguments.preserve
 
     # Verify paths
     paths, filenames = crycript.path_validator(
-        args.path, sort=False,
-        action=(args.encrypt, args.decrypt, args.change_password)
+        arguments.path, sort=False,
+        action=(arguments.encrypt, arguments.decrypt, arguments.change_password)
     )
 
     key, old_key, new_key = None, None, None
-    if args.same_password and len(paths) > 1:
-        if args.encrypt:
+    if arguments.same_password and len(paths) > 1:
+        if arguments.encrypt:
             key = crycript.password_to_key()
 
-        elif args.decrypt:
-            key = crycript.password_to_key(confirm_password=False, generate_pin=False)
+        elif arguments.decrypt:
+            key = crycript.password_to_key(confirm_password=False, generate_token=False)
 
-        elif args.change_password:
+        elif arguments.change_password:
             old_key = crycript.password_to_key(
                 confirm_password=False, password_message='Old Password: ',
-                generate_pin=False)
+                generate_token=False)
 
             new_key = crycript.password_to_key(
                 password_message='New Password: ',
                 confirmation_message='Repeat Password: ',
-                generate_pin=True)
+                generate_token=True)
 
     for i, path in enumerate(paths):
         if len(paths) > 1:
-            print(f'-> {filenames[i]}', end='\r') if args.same_password else print(f'-> {filenames[i]}')
+            print(f'-> {filenames[i]}', end='\r') if arguments.same_password else print(f'-> {filenames[i]}')
 
-        if args.encrypt:
+        if arguments.encrypt:
             status = crycript.encrypt(path, key)
-        elif args.decrypt:
+        elif arguments.decrypt:
             status = crycript.decrypt(path, key)
-        elif args.change_password:
+        elif arguments.change_password:
             status = crycript.change_password(path, old_key, new_key)
         print(status)
-
